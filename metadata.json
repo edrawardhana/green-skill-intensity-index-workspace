@@ -1,0 +1,6 @@
+{
+  "name": "Green Skill Intensity Index Workspace",
+  "description": "Sebuah workspace interaktif untuk mensimulasikan web scraping, data cleaning, ekstraksi NLP green skills, dan analisis Green Skill Intensity Index lowongan kerja di Indonesia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
