@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
-import { JobVacancy, OntologyTerm } from '../types';
-import { FileText, Copy, Download, Check, Sparkles, BookOpen } from 'lucide-react';
+import React, { useState } from "react";
+import { JobVacancy, OntologyTerm } from "../types";
+import {
+  FileText,
+  Copy,
+  Download,
+  Check,
+  Sparkles,
+  BookOpen,
+} from "lucide-react";
 
 interface ResearchPaperExporterProps {
   processedJobs: JobVacancy[];
@@ -8,10 +15,18 @@ interface ResearchPaperExporterProps {
   ontology: OntologyTerm[];
 }
 
-export default function ResearchPaperExporter({ processedJobs, rawJobs, ontology }: ResearchPaperExporterProps) {
-  const [authorName, setAuthorName] = useState('P. Peler'); // derived from user metadata email or editable
-  const [affiliation, setAffiliation] = useState('Department of Industrial Engineering, Institut Teknologi Sepuluh Nopember (ITS)');
-  const [targetVenue, setTargetVenue] = useState('IEEE International Conference on Sustainable Engineering and Technology');
+export default function ResearchPaperExporter({
+  processedJobs,
+  rawJobs,
+  ontology,
+}: ResearchPaperExporterProps) {
+  const [authorName, setAuthorName] = useState("P. Peler"); // derived from user metadata email or editable
+  const [affiliation, setAffiliation] = useState(
+    "Department of Industrial Engineering, Institut Teknologi Sepuluh Nopember (ITS)",
+  );
+  const [targetVenue, setTargetVenue] = useState(
+    "IEEE International Conference on Sustainable Engineering and Technology",
+  );
   const [copied, setCopied] = useState(false);
 
   // Derive exact stats from the current active simulation to embed into the generated paper
@@ -19,34 +34,58 @@ export default function ResearchPaperExporter({ processedJobs, rawJobs, ontology
   const totalClean = processedJobs.length;
   const totalDupes = rawJobs.length - processedJobs.length;
 
-  const totalIntensity = processedJobs.reduce((acc, job) => acc + (job.green_intensity_score || 0), 0);
-  const avgIntensity = processedJobs.length > 0 ? Math.round(totalIntensity / processedJobs.length) : 0;
+  const totalIntensity = processedJobs.reduce(
+    (acc, job) => acc + (job.green_intensity_score || 0),
+    0,
+  );
+  const avgIntensity =
+    processedJobs.length > 0
+      ? Math.round(totalIntensity / processedJobs.length)
+      : 0;
 
   // Sektor tertinggi
-  const industrySummary: { [key: string]: { totalScore: number, count: number } } = {};
-  processedJobs.forEach(job => {
-    if (!industrySummary[job.industry]) industrySummary[job.industry] = { totalScore: 0, count: 0 };
-    industrySummary[job.industry].totalScore += (job.green_intensity_score || 0);
+  const industrySummary: {
+    [key: string]: { totalScore: number; count: number };
+  } = {};
+  processedJobs.forEach((job) => {
+    if (!industrySummary[job.industry])
+      industrySummary[job.industry] = { totalScore: 0, count: 0 };
+    industrySummary[job.industry].totalScore += job.green_intensity_score || 0;
     industrySummary[job.industry].count += 1;
   });
 
-  const topIndustry = Object.keys(industrySummary)
-    .map(name => ({ name, avgScore: Math.round(industrySummary[name].totalScore / industrySummary[name].count) }))
-    .sort((a, b) => b.avgScore - a.avgScore)[0]?.name || 'Manufaktur Cerdas';
+  const topIndustry =
+    Object.keys(industrySummary)
+      .map((name) => ({
+        name,
+        avgScore: Math.round(
+          industrySummary[name].totalScore / industrySummary[name].count,
+        ),
+      }))
+      .sort((a, b) => b.avgScore - a.avgScore)[0]?.name || "Manufaktur Cerdas";
 
   // Average Green Premium
-  const highGreenJobs = processedJobs.filter(j => (j.green_intensity_score || 0) >= 45);
-  const lowGreenJobs = processedJobs.filter(j => (j.green_intensity_score || 0) < 15);
+  const highGreenJobs = processedJobs.filter(
+    (j) => (j.green_intensity_score || 0) >= 45,
+  );
+  const lowGreenJobs = processedJobs.filter(
+    (j) => (j.green_intensity_score || 0) < 15,
+  );
   const getAvgSalary = (list: JobVacancy[]) => {
-    const salaries = list.map(j => ((j.salary_min || 0) + (j.salary_max || 0)) / 2).filter(s => s > 0);
+    const salaries = list
+      .map((j) => ((j.salary_min || 0) + (j.salary_max || 0)) / 2)
+      .filter((s) => s > 0);
     if (salaries.length === 0) return 0;
     return Math.round(salaries.reduce((a, b) => a + b, 0) / salaries.length);
   };
   const highGreenAvgSalary = getAvgSalary(highGreenJobs);
   const lowGreenAvgSalary = getAvgSalary(lowGreenJobs);
-  const salaryPremiumPercent = lowGreenAvgSalary > 0 
-    ? Math.round(((highGreenAvgSalary - lowGreenAvgSalary) / lowGreenAvgSalary) * 100) 
-    : 15;
+  const salaryPremiumPercent =
+    lowGreenAvgSalary > 0
+      ? Math.round(
+          ((highGreenAvgSalary - lowGreenAvgSalary) / lowGreenAvgSalary) * 100,
+        )
+      : 15;
 
   const generatePaperMarkdown = () => {
     return `# ESTIMASI GREEN SKILL INTENSITY INDEX PADA LOWONGAN PEKERJAAN INDUSTRI DI JAWA TIMUR MENGGUNAKAN METODE NATURAL LANGUAGE PROCESSING (NLP)
@@ -54,7 +93,7 @@ export default function ResearchPaperExporter({ processedJobs, rawJobs, ontology
 **Penulis:** ${authorName}
 **Afiliasi:** ${affiliation}
 **Target Publikasi:** ${targetVenue}
-**Tanggal:** ${new Date().toLocaleDateString('id-ID')}
+**Tanggal:** ${new Date().toLocaleDateString("id-ID")}
 
 ---
 
@@ -103,7 +142,7 @@ Berdasarkan analisis terhadap ${totalClean} lowongan bersih yang diekstrak, dite
 Tingkat *Green Skill Intensity* tertinggi ditemukan pada sektor **${topIndustry}** yang membuktikan bahwa tekanan regulasi lingkungan dan penerapan industri 4.0 mendorong korporasi merekrut profesional dengan pemahaman keberlanjutan yang kuat.
 
 ### B. Analisis Gaji dan Green Premium
-Terdeteksi korelasi positif yang sangat kuat antara tuntutan indeks hijau dengan penawaran kompensasi bulanan. Peran dengan intensitas hijau tinggi (&ge;45%) menawarkan rata-rata gaji bulanan sebesar **Rp ${highGreenAvgSalary.toLocaleString('id-ID')}**, sementara peran konvensional (&lt;15%) hanya menawarkan rata-rata gaji **Rp ${lowGreenAvgSalary.toLocaleString('id-ID')}**. Hal ini membuktikan adanya **Green Salary Premium sebesar ${salaryPremiumPercent}%** di pasar tenaga kerja Jawa Timur.
+Terdeteksi korelasi positif yang sangat kuat antara tuntutan indeks hijau dengan penawaran kompensasi bulanan. Peran dengan intensitas hijau tinggi (&ge;45%) menawarkan rata-rata gaji bulanan sebesar **Rp ${highGreenAvgSalary.toLocaleString("id-ID")}**, sementara peran konvensional (&lt;15%) hanya menawarkan rata-rata gaji **Rp ${lowGreenAvgSalary.toLocaleString("id-ID")}**. Hal ini membuktikan adanya **Green Salary Premium sebesar ${salaryPremiumPercent}%** di pasar tenaga kerja Jawa Timur.
 
 ---
 
@@ -126,9 +165,9 @@ Penelitian ini membuktikan efektivitas metode NLP berbasis Generative AI dalam m
 
   const handleDownload = () => {
     const element = document.createElement("a");
-    const file = new Blob([generatePaperMarkdown()], { type: 'text/markdown' });
+    const file = new Blob([generatePaperMarkdown()], { type: "text/plain;charset=utf-8" });
     element.href = URL.createObjectURL(file);
-    element.download = "draft_paper_green_skills.md";
+    element.download = "draft_paper_green_skills.txt";
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
@@ -143,19 +182,26 @@ Penelitian ini membuktikan efektivitas metode NLP berbasis Generative AI dalam m
           Fase 6: Penyusunan Laporan & Publikasi Ilmiah
         </h2>
         <p className="text-slate-600 text-sm leading-relaxed">
-          Tujuan akhir dari *Green Labor Market Intelligence* ini adalah mempublikasikan temuan riset 
-          ke dalam laporan ilmiah atau jurnal nasional/internasional. Gunakan generator ini untuk merangkum 
-          parameter ontologi, hasil statistik crawling, pembersihan data, serta skor indeks intensitas kompetensi hijau Anda menjadi draf naskah ilmiah instan dalam format Markdown.
+          Tujuan akhir dari *Green Labor Market Intelligence* ini adalah
+          mempublikasikan temuan riset ke dalam laporan ilmiah atau jurnal
+          nasional/internasional. Gunakan generator ini untuk merangkum
+          parameter ontologi, hasil statistik crawling, pembersihan data, serta
+          skor indeks intensitas kompetensi hijau Anda menjadi draf naskah
+          ilmiah instan dalam format Markdown.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Form Metadata */}
         <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm space-y-4 h-fit">
-          <h3 className="font-bold text-slate-800 text-sm border-b border-slate-100 pb-2">Meta-data Penulisan</h3>
+          <h3 className="font-bold text-slate-800 text-sm border-b border-slate-100 pb-2">
+            Meta-data Penulisan
+          </h3>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-500 block">Nama Penulis Utama</label>
+            <label className="text-xs font-medium text-slate-500 block">
+              Nama Penulis Utama
+            </label>
             <input
               type="text"
               value={authorName}
@@ -165,7 +211,9 @@ Penelitian ini membuktikan efektivitas metode NLP berbasis Generative AI dalam m
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-500 block">Afiliasi / Universitas</label>
+            <label className="text-xs font-medium text-slate-500 block">
+              Afiliasi / Universitas
+            </label>
             <input
               type="text"
               value={affiliation}
@@ -175,7 +223,9 @@ Penelitian ini membuktikan efektivitas metode NLP berbasis Generative AI dalam m
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-500 block">Target Jurnal / Seminar</label>
+            <label className="text-xs font-medium text-slate-500 block">
+              Target Jurnal / Seminar
+            </label>
             <input
               type="text"
               value={targetVenue}
@@ -197,7 +247,7 @@ Penelitian ini membuktikan efektivitas metode NLP berbasis Generative AI dalam m
               ) : (
                 <>
                   <Copy className="w-3.5 h-3.5" />
-                  Salin Teks (Markdown)
+                  Salin Teks (Plain Text)
                 </>
               )}
             </button>
@@ -207,7 +257,7 @@ Penelitian ini membuktikan efektivitas metode NLP berbasis Generative AI dalam m
               className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm"
             >
               <Download className="w-3.5 h-3.5" />
-              Unduh File (.md)
+              Unduh File (.txt)
             </button>
           </div>
         </div>
@@ -215,7 +265,7 @@ Penelitian ini membuktikan efektivitas metode NLP berbasis Generative AI dalam m
         {/* Live Document Preview */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-100 p-5 shadow-sm space-y-4 flex flex-col h-[520px]">
           <div className="flex justify-between items-center pb-2 border-b border-slate-100 text-xs text-slate-400 font-mono">
-            <span>PREVIEW NASKAH ILMIAH (MARKDOWN DRAFT)</span>
+            <span>PREVIEW NASKAH ILMIAH (TEKS DRAFT)</span>
             <span className="flex items-center gap-1 text-emerald-600">
               <Sparkles className="w-3 h-3" />
               INTELLIGENT COMPILER ACTIVE

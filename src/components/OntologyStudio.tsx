@@ -1,51 +1,69 @@
-import React, { useState } from 'react';
-import { OntologyTerm } from '../types';
-import { Plus, Search, BookOpen, Layers, ShieldCheck, HelpCircle } from 'lucide-react';
+import React, { useState } from "react";
+import { OntologyTerm } from "../types";
+import {
+  Plus,
+  Search,
+  BookOpen,
+  Layers,
+  ShieldCheck,
+  HelpCircle,
+} from "lucide-react";
 
 interface OntologyStudioProps {
   ontology: OntologyTerm[];
   onAddTerm: (term: OntologyTerm) => void;
 }
 
-export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'all' | 'direct' | 'indirect' | 'transition'>('all');
-  
+export default function OntologyStudio({
+  ontology,
+  onAddTerm,
+}: OntologyStudioProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState<
+    "all" | "direct" | "indirect" | "transition"
+  >("all");
+
   // Form state
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newTerm, setNewTerm] = useState('');
-  const [newCategory, setNewCategory] = useState<'direct' | 'indirect' | 'transition'>('direct');
-  const [newDesc, setNewDesc] = useState('');
-  const [newSynonyms, setNewSynonyms] = useState('');
+  const [newTerm, setNewTerm] = useState("");
+  const [newCategory, setNewCategory] = useState<
+    "direct" | "indirect" | "transition"
+  >("direct");
+  const [newDesc, setNewDesc] = useState("");
+  const [newSynonyms, setNewSynonyms] = useState("");
 
-  const filteredOntology = ontology.filter(item => {
-    const matchesSearch = item.term.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          item.synonyms.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesFilter = activeFilter === 'all' || item.category === activeFilter;
+  const filteredOntology = ontology.filter((item) => {
+    const matchesSearch =
+      item.term.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.synonyms.some((s) =>
+        s.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    const matchesFilter =
+      activeFilter === "all" || item.category === activeFilter;
     return matchesSearch && matchesFilter;
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTerm.trim()) return;
-    
+
     const synonymsArray = newSynonyms
-      .split(',')
-      .map(s => s.trim())
-      .filter(s => s.length > 0);
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
 
     onAddTerm({
       term: newTerm.trim(),
       category: newCategory,
-      description: newDesc.trim() || 'Custom user added term.',
-      synonyms: synonymsArray
+      description: newDesc.trim() || "Custom user added term.",
+      synonyms: synonymsArray,
     });
 
     // Reset Form
-    setNewTerm('');
-    setNewDesc('');
-    setNewSynonyms('');
+    setNewTerm("");
+    setNewDesc("");
+    setNewSynonyms("");
     setShowAddForm(false);
   };
 
@@ -57,39 +75,54 @@ export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioPr
           Fase 0: Persiapan Green Keyword Ontology
         </h2>
         <p className="text-slate-600 text-sm leading-relaxed">
-          Sebelum melakukan ekstraksi skill, kita harus membangun ontologi kata kunci hijau (Green Keyword Ontology). 
-          Ontologi ini dikelompokkan menjadi tiga kelompok utama sesuai dokumen penelitian untuk menghitung 
-          <strong className="text-emerald-700"> Green Skill Intensity Index</strong>.
+          Sebelum melakukan ekstraksi skill, kita harus membangun ontologi kata
+          kunci hijau (Green Keyword Ontology). Ontologi ini dikelompokkan
+          menjadi tiga kelompok utama sesuai dokumen penelitian untuk menghitung
+          <strong className="text-emerald-700">
+            {" "}
+            Green Skill Intensity Index
+          </strong>
+          .
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100/50">
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-              <h3 className="font-semibold text-emerald-900 text-sm">Direct Green Terms</h3>
+              <h3 className="font-semibold text-emerald-900 text-sm">
+                Direct Green Terms
+              </h3>
             </div>
             <p className="text-emerald-800 text-xs leading-relaxed">
-              Konsep dan teknologi ramah lingkungan secara langsung, seperti dekarbonisasi, solar PV, ESG reporting, dan ekonomi sirkular.
+              Konsep dan teknologi ramah lingkungan secara langsung, seperti
+              dekarbonisasi, solar PV, ESG reporting, dan ekonomi sirkular.
             </p>
           </div>
 
           <div className="p-4 bg-blue-50/50 rounded-xl border border-blue-100/50">
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-              <h3 className="font-semibold text-blue-900 text-sm">Indirect Green Terms</h3>
+              <h3 className="font-semibold text-blue-900 text-sm">
+                Indirect Green Terms
+              </h3>
             </div>
             <p className="text-blue-800 text-xs leading-relaxed">
-              Praktik perlindungan atau efisiensi pendukung, seperti AMDAL, kepatuhan ISO 14001, pengurangan sampah, dan hemat energi.
+              Praktik perlindungan atau efisiensi pendukung, seperti AMDAL,
+              kepatuhan ISO 14001, pengurangan sampah, dan hemat energi.
             </p>
           </div>
 
           <div className="p-4 bg-amber-50/50 rounded-xl border border-amber-100/50">
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-              <h3 className="font-semibold text-amber-900 text-sm">Transition Skills</h3>
+              <h3 className="font-semibold text-amber-900 text-sm">
+                Transition Skills
+              </h3>
             </div>
             <p className="text-amber-800 text-xs leading-relaxed">
-              Metode industri 4.0 dan integrasi sistem cerdas yang memicu transisi ramah lingkungan, seperti IoT energy monitoring dan analisis telemetri polusi.
+              Metode industri 4.0 dan integrasi sistem cerdas yang memicu
+              transisi ramah lingkungan, seperti IoT energy monitoring dan
+              analisis telemetri polusi.
             </p>
           </div>
         </div>
@@ -99,41 +132,41 @@ export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioPr
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white rounded-xl border border-slate-100 p-4 shadow-sm">
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <button
-            onClick={() => setActiveFilter('all')}
+            onClick={() => setActiveFilter("all")}
             className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-              activeFilter === 'all'
-                ? 'bg-slate-800 text-white'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              activeFilter === "all"
+                ? "bg-slate-800 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             Semua ({ontology.length})
           </button>
           <button
-            onClick={() => setActiveFilter('direct')}
+            onClick={() => setActiveFilter("direct")}
             className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-              activeFilter === 'direct'
-                ? 'bg-emerald-600 text-white'
-                : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+              activeFilter === "direct"
+                ? "bg-emerald-600 text-white"
+                : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
             }`}
           >
             Direct Green
           </button>
           <button
-            onClick={() => setActiveFilter('indirect')}
+            onClick={() => setActiveFilter("indirect")}
             className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-              activeFilter === 'indirect'
-                ? 'bg-blue-600 text-white'
-                : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+              activeFilter === "indirect"
+                ? "bg-blue-600 text-white"
+                : "bg-blue-50 text-blue-700 hover:bg-blue-100"
             }`}
           >
             Indirect Green
           </button>
           <button
-            onClick={() => setActiveFilter('transition')}
+            onClick={() => setActiveFilter("transition")}
             className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-              activeFilter === 'transition'
-                ? 'bg-amber-600 text-white'
-                : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+              activeFilter === "transition"
+                ? "bg-amber-600 text-white"
+                : "bg-amber-50 text-amber-700 hover:bg-amber-100"
             }`}
           >
             Transition Skills
@@ -164,9 +197,14 @@ export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioPr
 
       {/* Add New Term Dialog/Form */}
       {showAddForm && (
-        <form onSubmit={handleSubmit} className="bg-slate-50 border border-slate-100 rounded-xl p-5 space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-slate-50 border border-slate-100 rounded-xl p-5 space-y-4"
+        >
           <div className="flex justify-between items-center pb-2 border-b border-slate-200/60">
-            <h4 className="font-semibold text-slate-800 text-sm">Tambah Kata Kunci Hijau Baru</h4>
+            <h4 className="font-semibold text-slate-800 text-sm">
+              Tambah Kata Kunci Hijau Baru
+            </h4>
             <button
               type="button"
               onClick={() => setShowAddForm(false)}
@@ -178,7 +216,9 @@ export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioPr
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-600 block">Nama Kata Kunci (Term Utama)</label>
+              <label className="text-xs font-medium text-slate-600 block">
+                Nama Kata Kunci (Term Utama)
+              </label>
               <input
                 type="text"
                 required
@@ -190,7 +230,9 @@ export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioPr
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-600 block">Kategori</label>
+              <label className="text-xs font-medium text-slate-600 block">
+                Kategori
+              </label>
               <select
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value as any)}
@@ -204,7 +246,9 @@ export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioPr
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-600 block">Deskripsi / Penjelasan Singkat</label>
+            <label className="text-xs font-medium text-slate-600 block">
+              Deskripsi / Penjelasan Singkat
+            </label>
             <input
               type="text"
               placeholder="Jelaskan peran kata kunci ini dalam aksi keberlanjutan..."
@@ -215,7 +259,9 @@ export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioPr
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-600 block">Sinonim / Padanan Kata (Pisahkan dengan koma)</label>
+            <label className="text-xs font-medium text-slate-600 block">
+              Sinonim / Padanan Kata (Pisahkan dengan koma)
+            </label>
             <input
               type="text"
               placeholder="jejak karbon, ghg emissions, emisi co2"
@@ -240,18 +286,18 @@ export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioPr
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredOntology.length > 0 ? (
           filteredOntology.map((item, idx) => {
-            const isDirect = item.category === 'direct';
-            const isIndirect = item.category === 'indirect';
-            
+            const isDirect = item.category === "direct";
+            const isIndirect = item.category === "indirect";
+
             return (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className={`bg-white rounded-xl border p-5 transition-all hover:shadow-md flex flex-col justify-between ${
-                  isDirect 
-                    ? 'border-emerald-100 hover:border-emerald-200 bg-gradient-to-br from-white to-emerald-50/10' 
+                  isDirect
+                    ? "border-emerald-100 hover:border-emerald-200 bg-gradient-to-br from-white to-emerald-50/10"
                     : isIndirect
-                    ? 'border-blue-100 hover:border-blue-200 bg-gradient-to-br from-white to-blue-50/10'
-                    : 'border-amber-100 hover:border-amber-200 bg-gradient-to-br from-white to-amber-50/10'
+                      ? "border-blue-100 hover:border-blue-200 bg-gradient-to-br from-white to-blue-50/10"
+                      : "border-amber-100 hover:border-amber-200 bg-gradient-to-br from-white to-amber-50/10"
                 }`}
               >
                 <div>
@@ -259,14 +305,18 @@ export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioPr
                     <h3 className="font-bold text-slate-800 text-base flex items-center gap-1.5">
                       {item.term}
                     </h3>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase ${
-                      isDirect 
-                        ? 'bg-emerald-100 text-emerald-800' 
-                        : isIndirect
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-amber-100 text-amber-800'
-                    }`}>
-                      {item.category === 'transition' ? 'Transition' : item.category + ' Green'}
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase ${
+                        isDirect
+                          ? "bg-emerald-100 text-emerald-800"
+                          : isIndirect
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-amber-100 text-amber-800"
+                      }`}
+                    >
+                      {item.category === "transition"
+                        ? "Transition"
+                        : item.category + " Green"}
                     </span>
                   </div>
                   <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-4">
@@ -275,18 +325,22 @@ export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioPr
                 </div>
 
                 <div className="pt-3 border-t border-slate-100">
-                  <span className="text-[10px] font-medium text-slate-400 block mb-1.5 uppercase tracking-wider">Sinonim / Padanan Terkait</span>
+                  <span className="text-[10px] font-medium text-slate-400 block mb-1.5 uppercase tracking-wider">
+                    Sinonim / Padanan Terkait
+                  </span>
                   <div className="flex flex-wrap gap-1.5">
                     {item.synonyms.map((syn, synIdx) => (
-                      <span 
-                        key={synIdx} 
+                      <span
+                        key={synIdx}
                         className="px-2 py-0.5 text-[11px] font-medium bg-slate-50 text-slate-500 rounded-md border border-slate-200/50"
                       >
                         {syn}
                       </span>
                     ))}
                     {item.synonyms.length === 0 && (
-                      <span className="text-[11px] text-slate-400 italic">Tidak ada sinonim tambahan</span>
+                      <span className="text-[11px] text-slate-400 italic">
+                        Tidak ada sinonim tambahan
+                      </span>
                     )}
                   </div>
                 </div>
@@ -296,8 +350,12 @@ export default function OntologyStudio({ ontology, onAddTerm }: OntologyStudioPr
         ) : (
           <div className="col-span-full py-12 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
             <HelpCircle className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-            <p className="text-slate-500 font-medium text-sm">Tidak menemukan kata kunci yang cocok</p>
-            <p className="text-slate-400 text-xs mt-1">Coba sesuaikan pencarian atau filter kategori Anda</p>
+            <p className="text-slate-500 font-medium text-sm">
+              Tidak menemukan kata kunci yang cocok
+            </p>
+            <p className="text-slate-400 text-xs mt-1">
+              Coba sesuaikan pencarian atau filter kategori Anda
+            </p>
           </div>
         )}
       </div>

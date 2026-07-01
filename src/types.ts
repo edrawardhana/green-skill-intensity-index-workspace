@@ -1,12 +1,12 @@
 export interface Skill {
   name: string;
-  category: 'direct' | 'indirect' | 'transition' | 'general';
+  category: "direct" | "indirect" | "transition" | "general";
   confidence: number; // 0 to 1
 }
 
 export interface JobVacancy {
   job_id: string;
-  source: 'JobStreet' | 'Glints' | 'LinkedIn';
+  source: "JobStreet" | "Glints" | "LinkedIn";
   job_title: string;
   company: string;
   industry: string;
@@ -20,12 +20,12 @@ export interface JobVacancy {
   experience: number; // years
   education: string; // Bachelor, Master, High School, etc.
   url: string;
-  
+
   // Cleaned state variables
   is_cleaned?: boolean;
   is_duplicate?: boolean;
   has_empty_desc?: boolean;
-  
+
   // Extracted skill variables (Fase 3)
   extracted_skills?: Skill[];
   green_intensity_score?: number; // 0 to 100
@@ -33,13 +33,13 @@ export interface JobVacancy {
 
 export interface OntologyTerm {
   term: string;
-  category: 'direct' | 'indirect' | 'transition';
+  category: "direct" | "indirect" | "transition";
   description: string;
   synonyms: string[];
 }
 
 export interface ScraperConfig {
-  source: 'JobStreet' | 'Glints' | 'LinkedIn' | 'All';
+  source: "JobStreet" | "Glints" | "LinkedIn" | "All";
   keywords: string[];
   locations: string[];
   industries: string[];

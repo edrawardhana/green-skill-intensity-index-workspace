@@ -73,8 +73,14 @@ export default function App() {
       {/* Sleek Theme Header */}
       <header className="h-[72px] bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-12 shrink-0 shadow-sm z-10">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-extrabold text-lg shadow-sm">
-            G
+          <div className="relative w-10 h-10">
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-400 to-cyan-500 shadow-[0_10px_30px_-10px_rgba(16,185,129,0.55)]" />
+            <div className="absolute inset-[2px] rounded-[14px] bg-slate-950/95 flex items-center justify-center">
+              <span className="text-base font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-emerald-300 via-white to-cyan-300">
+                G
+              </span>
+            </div>
+            <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-cyan-400 shadow-lg ring-2 ring-white" />
           </div>
           <div>
             <div className="font-extrabold text-base md:text-lg tracking-tight text-slate-900">
